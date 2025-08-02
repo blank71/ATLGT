@@ -544,7 +544,7 @@ let newnode () : vtx  = Bid (GenId.next ())
    *)
 
 let connect_nodesL (onoderList1S:onodeR list) (inoderList2:inodeR list) =
-  let onoderList1 = (List.sort (fun x y -> Pervasives.compare (snd x) (snd y)) onoderList1S) in
+  let onoderList1 = (List.sort (fun x y -> Stdlib.compare (snd x) (snd y)) onoderList1S) in
   let rec cn ol il = match (ol,il) with
     ([],_) -> SetofEdge.empty
   | (_,[]) -> SetofEdge.empty (* in case of cycle(), not all output nodes have counterpart input nodes *)

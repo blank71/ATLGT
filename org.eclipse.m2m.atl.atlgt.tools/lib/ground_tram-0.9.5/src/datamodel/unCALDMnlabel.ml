@@ -49,7 +49,7 @@ let pp_lnode fmt ((v,l):lnode) : unit =
 module SetofLNode = Set.Make (
   struct
     type t = lnode
-    let compare = Pervasives.compare
+    let compare = Stdlib.compare
   end
 )
 
@@ -74,7 +74,7 @@ let pp_uledge fmt ((u,v):uledge) : unit =
 module SetofULEdge = Set.Make (
   struct 
     type t = uledge
-    let compare = Pervasives.compare
+    let compare = Stdlib.compare
   end
 )
 
@@ -143,13 +143,13 @@ let elg2nlg (g:graph) : nlgraph = fst (elg2nlg_vtx2lnode g)
 (* map of labeled node *)
 module MapofLNode = Map.Make (struct 
     type t = lnode
-    let compare = Pervasives.compare
+    let compare = Stdlib.compare
   end )
 
 (* map of node label *)
 module MapofNlabel = Map.Make (struct 
     type t = nlabel
-    let compare = Pervasives.compare
+    let compare = Stdlib.compare
   end )
 
 let lnodeSet2Map f = MapofLNode.set2map (module SetofLNode : Set.S with type elt = lnode and type t = SetofLNode.t) f

@@ -1296,7 +1296,7 @@ module SetOfWBT = Set.Make (
   struct
     type t = (weight * int * weighted_lazy_2tree Lazy.t)
     let  compare (w1,i1,_) (w2,i2,_) =
-      let c = Pervasives.compare w1 w2 in
+      let c = Stdlib.compare w1 w2 in
 	if c = 0 then
 	  compare i1 i2
 	else

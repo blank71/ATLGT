@@ -25,7 +25,7 @@ type priQ_ent = float * vtx * ((vtx * allit) option)
 module PriQ = Set.Make (
   struct
     type t = priQ_ent
-    let compare = Pervasives.compare
+    let compare = Stdlib.compare
   end
 )
 
