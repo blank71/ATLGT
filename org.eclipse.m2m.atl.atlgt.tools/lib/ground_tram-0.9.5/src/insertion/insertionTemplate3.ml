@@ -469,12 +469,11 @@ let doConnectRec eid root recM outM gs =
 (*   let _ = print_string ("outM :: [" ^ String.concat ";" outM ^ "]\n") in  *)
 (*   let _ = print_string ("recM :: [" ^ String.concat ";" recM ^ "]\n") in  *)
   let vRecN = 
-    let recM_forced : string list = Lazy.force recM in
-    SetofVtx.fromList (List.map (fun m -> Hub (root,m,eid)) recM_forced) in 
+    SetofVtx.fromList (map (fun m -> Hub (root,m,eid)) recM) in 
   let eRecN =
     SetofEdge.fromList (
       gs >>= (fun g -> 
-		(Lazy.force recM) >>= (fun m -> 
+		recM >>= (fun m -> 
 			    try 
 			      [ (Hub (root,m,eid), ALEps, lookupI g m) ]
 			    with _ ->
@@ -482,7 +481,7 @@ let doConnectRec eid root recM outM gs =
 	     )) in
   let oRecN = 
     SetofOnodeR.fromList (
-      (Lazy.force recM) >>= (fun m ->
+      recM >>= (fun m ->
 	  outM >>= (fun n -> 
 	      [ (Hub (root,m,eid), n &^ m) ]))
     ) in 
@@ -497,7 +496,8 @@ let doConnectRec eid root recM outM gs =
     SetofOnodeR.union oRecN (List.fold_left 
 			       (fun r g -> SetofOnodeR.union g.o r) SetofOnodeR.empty gs) in 
   let ii =
-    SetofInodeR.fromList [] in 
+    SetofInodeR.fromList 
+      (map (fun m -> (m,Hub (root,m,eid))) recM) in 
     { v = vv; e = ee; i = ii; o = oo }
 
 				      
@@ -550,7 +550,7 @@ let makeRecExp eid recM varl varg ebody vtx graph =
   let outEdges = 
     SetofEdge.fold (fun (src,lab,dst) r ->
 		      if src = vtx then (src,lab,dst)::r else r) graph.e [] in
-    S_ConnRec (eid,vtx,recM,outMarkers vtx graph, List.map makeExpFromEdge outEdges)
+    S_ConnRec (eid,vtx,recM,outMarkers vtx graph, map makeExpFromEdge outEdges)
 
 			    
 let makeEscExp eid edge vtx graph = 
@@ -563,7 +563,7 @@ let makeEscExp eid edge vtx graph =
   let makeEscExpFromVtx v =
     S_Esc (eid,edge, S_NodeAt (v, graph)) in 
     S_ConnEsc (eid,vtx,edge,outMarkers vtx graph, 
-	       List.map makeEscExpFromVtx vtxs, labs)
+	       map makeEscExpFromVtx vtxs, labs)
 
     
 
@@ -638,7 +638,7 @@ let small_step
 	       (match pend with 
 		  | [] ->
 		      let gs = List.rev (v::proced) in 
-			(stack, env, memo, S_GVal (doConnectRec eid root (lazy recM) outM gs))
+			(stack, env, memo, S_GVal (doConnectRec eid root recM outM gs))
 		  | e::es ->
 		      ((C_ConnRec (eid,root,recM,outM,v::proced,es),env)::stack,env,memo,e))
 	   | (C_RecEnd memo,env)::stack ->
@@ -763,7 +763,7 @@ let small_step
     | S_ConnRec (eid, vtx, recM, outM, es) ->
 	(match es with 
 	   | [] -> 
-	       (stack, env, memo, S_GVal (doConnectRec eid vtx (lazy recM) outM []))
+	       (stack, env, memo, S_GVal (doConnectRec eid vtx recM outM []))
 	   | e::es ->
 	       ((C_ConnRec (eid,vtx,recM,outM,[],es),env)::stack,env,memo,e)
 	)
@@ -1298,7 +1298,7 @@ module SetOfWBT = Set.Make (
     let  compare (w1,i1,_) (w2,i2,_) =
       let c = Stdlib.compare w1 w2 in
 	if c = 0 then
-	  Stdlib.compare i1 i2
+	  compare i1 i2
 	else
 	  c
   end
@@ -1361,7 +1361,7 @@ let rec nth_stream n st =
 
 let replaceList l1 l2 eqS =
   let f l = if l = l1 then l2 else l in
-    List.map (fun (lv1,lv2) -> (f lv1, f lv2)) eqS
+    map (fun (lv1,lv2) -> (f lv1, f lv2)) eqS
 
 
 let substituteNeqs eqS neqS =
@@ -1532,7 +1532,7 @@ let loopEdgeEsc v eid edge (nv,graph) r =
 let makeEscExpsN eid edge (nv,graph) memo r =
   let rec nats i = Next (i,lazy (nats (i+1))) in
     merge_stream
-      (list2stream (List.map (fun v -> loopEdgeEsc  v eid edge (nv,graph) r) memo))
+      (list2stream (map (fun v -> loopEdgeEsc  v eid edge (nv,graph) r) memo))
       (map_stream (fun i -> addNEdgesEsc i eid edge (nv,graph) r) (nats 0))
   
 
@@ -1565,7 +1565,7 @@ let makeRecExpsN eid markers l g ebody (nv,graph) memo r =
   let rec nats i = Next (i,lazy (nats (i+1))) in
   (* let rec nats () = Next (0, lazy (Next (1, lazy SEnd ))) in *)
     merge_stream
-      (list2stream (List.map  (fun v -> loopEdgeRec  v eid markers l g ebody (nv,graph) r) memo))
+      (list2stream (map  (fun v -> loopEdgeRec  v eid markers l g ebody (nv,graph) r) memo))
       (map_stream (fun i -> addNEdgesRec i eid markers l g ebody (nv,graph) r) (nats 0))
 
 let narrowing_step
