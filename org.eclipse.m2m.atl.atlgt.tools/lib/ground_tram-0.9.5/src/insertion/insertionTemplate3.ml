@@ -246,15 +246,15 @@ type configuration =
 (* let doConnectEnc eid edge vtx gs =  *)
 (* (\*   let _     = print_string (string_of_int (length gs)) in  *\) *)
 (* (\*   let _     = print_string "<<<\n" in *\) *)
-(* (\*   let _     = map (fun g -> print_string (graph2str g)) gs in *\) *)
+(* (\*   let _     = List.map (fun g -> print_string (graph2str g)) gs in *\) *)
 (* (\*   let _     = print_string ">>>\n" in  *\) *)
-(*   let roots = map (fun g -> lookupI g "&") gs in  *)
+(*   let roots = List.map (fun g -> lookupI g "&") gs in  *)
 (*   let root  = FrE (vtx,edge,eid) in  *)
 (*   let repl r v = if v = r then root else v in *)
-(*   let gs_v  = map (fun x -> x.v) gs in  *)
-(*   let gs_e  = map (fun x -> x.e) gs in  *)
-(*   let gs_o  = map (fun x -> x.o) gs in  *)
-(*   let gs_i  = map (fun x -> x.i) gs in *)
+(*   let gs_v  = List.map (fun x -> x.v) gs in  *)
+(*   let gs_e  = List.map (fun x -> x.e) gs in  *)
+(*   let gs_o  = List.map (fun x -> x.o) gs in  *)
+(*   let gs_i  = List.map (fun x -> x.i) gs in *)
 (*   let vs    =  *)
 (*     fold_right *)
 (*       (fun (nodes,r) res -> *)
@@ -328,7 +328,7 @@ type configuration =
 (* 		        o = SetofOnodeR.filter (fun (v,o) -> v = root) graph.o}) *)
 (*       | _  -> *)
 (* 	  S_EncB(eid,edge,root, *)
-(* 		 map (fun (a,v) -> eedge a v) landv) *)
+(* 		 List.map (fun (a,v) -> eedge a v) landv) *)
 
 	
 (* (\* construct hubs from root for markers, and connect  *\) *)
@@ -338,9 +338,9 @@ type configuration =
 (*     SetofMarker.fold (fun m r -> *)
 (* 			SetofVtx.add (Hub (root,m,eid)) r)  *)
 (*       markers SetofVtx.empty in  *)
-(*   let gs_v = map (fun x -> x.v) gs in *)
-(*   let gs_e = map (fun x -> x.e) gs in  *)
-(*   let gs_o = map (fun x -> x.o) gs in  *)
+(*   let gs_v = List.map (fun x -> x.v) gs in *)
+(*   let gs_e = List.map (fun x -> x.e) gs in  *)
+(*   let gs_o = List.map (fun x -> x.o) gs in  *)
 (*   let vs =  *)
 (*     fold_right  *)
 (*       SetofVtx.union gs_v SetofVtx.empty in *)
@@ -469,7 +469,7 @@ let doConnectRec eid root recM outM gs =
 (*   let _ = print_string ("outM :: [" ^ String.concat ";" outM ^ "]\n") in  *)
 (*   let _ = print_string ("recM :: [" ^ String.concat ";" recM ^ "]\n") in  *)
   let vRecN = 
-    SetofVtx.fromList (map (fun m -> Hub (root,m,eid)) recM) in 
+    SetofVtx.fromList (List.map (fun m -> Hub (root,m,eid)) recM) in 
   let eRecN =
     SetofEdge.fromList (
       gs >>= (fun g -> 
@@ -497,7 +497,7 @@ let doConnectRec eid root recM outM gs =
 			       (fun r g -> SetofOnodeR.union g.o r) SetofOnodeR.empty gs) in 
   let ii =
     SetofInodeR.fromList 
-      (map (fun m -> (m,Hub (root,m,eid))) recM) in 
+      (List.map (fun m -> (m,Hub (root,m,eid))) recM) in 
     { v = vv; e = ee; i = ii; o = oo }
 
 				      
@@ -550,7 +550,7 @@ let makeRecExp eid recM varl varg ebody vtx graph =
   let outEdges = 
     SetofEdge.fold (fun (src,lab,dst) r ->
 		      if src = vtx then (src,lab,dst)::r else r) graph.e [] in
-    S_ConnRec (eid,vtx,recM,outMarkers vtx graph, map makeExpFromEdge outEdges)
+    S_ConnRec (eid,vtx,recM,outMarkers vtx graph, List.map makeExpFromEdge outEdges)
 
 			    
 let makeEscExp eid edge vtx graph = 
@@ -563,7 +563,7 @@ let makeEscExp eid edge vtx graph =
   let makeEscExpFromVtx v =
     S_Esc (eid,edge, S_NodeAt (v, graph)) in 
     S_ConnEsc (eid,vtx,edge,outMarkers vtx graph, 
-	       map makeEscExpFromVtx vtxs, labs)
+	       List.map makeEscExpFromVtx vtxs, labs)
 
     
 
@@ -1298,7 +1298,7 @@ module SetOfWBT = Set.Make (
     let  compare (w1,i1,_) (w2,i2,_) =
       let c = Stdlib.compare w1 w2 in
 	if c = 0 then
-	  compare i1 i2
+	  Stdlib.compare i1 i2
 	else
 	  c
   end
@@ -1361,7 +1361,7 @@ let rec nth_stream n st =
 
 let replaceList l1 l2 eqS =
   let f l = if l = l1 then l2 else l in
-    map (fun (lv1,lv2) -> (f lv1, f lv2)) eqS
+    List.map (fun (lv1,lv2) -> (f lv1, f lv2)) eqS
 
 
 let substituteNeqs eqS neqS =
@@ -1478,7 +1478,7 @@ let replaceNode v1 v2 graph =
     graph
 
 let replaceNodeEnv v1 v2 rho =
-  { gvenv = map (fun (v,g) -> (v,replaceNode v1 v2 g)) rho.gvenv;
+  { gvenv = List.map (fun (v,g) -> (v,replaceNode v1 v2 g)) rho.gvenv;
     lvenv = rho.lvenv;
   }
 *)
@@ -1501,7 +1501,7 @@ let addEdgeR (u,l,v) r =
 
 (*
 let addEdgeEnv edge rho =
-  { gvenv = map (fun (v,g) -> (v,addEdge edge g)) rho.gvenv;
+  { gvenv = List.map (fun (v,g) -> (v,addEdge edge g)) rho.gvenv;
     lvenv = rho.lvenv;
   }
 *)
@@ -1532,7 +1532,7 @@ let loopEdgeEsc v eid edge (nv,graph) r =
 let makeEscExpsN eid edge (nv,graph) memo r =
   let rec nats i = Next (i,lazy (nats (i+1))) in
     merge_stream
-      (list2stream (map (fun v -> loopEdgeEsc  v eid edge (nv,graph) r) memo))
+      (list2stream (List.map (fun v -> loopEdgeEsc  v eid edge (nv,graph) r) memo))
       (map_stream (fun i -> addNEdgesEsc i eid edge (nv,graph) r) (nats 0))
   
 
@@ -1565,7 +1565,7 @@ let makeRecExpsN eid markers l g ebody (nv,graph) memo r =
   let rec nats i = Next (i,lazy (nats (i+1))) in
   (* let rec nats () = Next (0, lazy (Next (1, lazy SEnd ))) in *)
     merge_stream
-      (list2stream (map  (fun v -> loopEdgeRec  v eid markers l g ebody (nv,graph) r) memo))
+      (list2stream (List.map (fun v -> loopEdgeRec  v eid markers l g ebody (nv,graph) r) memo))
       (map_stream (fun i -> addNEdgesRec i eid markers l g ebody (nv,graph) r) (nats 0))
 
 let narrowing_step
