@@ -34,7 +34,7 @@ module OPT (NLG : ONLGsig) = struct
 
   module MapofNode = Map.Make (struct 
     type t = nid
-    let compare = Pervasives.compare
+    let compare = Stdlib.compare
   end )
 
 

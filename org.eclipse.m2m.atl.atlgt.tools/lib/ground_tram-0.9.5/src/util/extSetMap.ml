@@ -478,7 +478,7 @@ module Bag = struct
 	    if count = 0 then None else Some count
 	| None,   None    -> None
     let diff b1 b2 = M.merge diff_merge b1 b2
-    let compare b1 b2 = M.compare Pervasives.compare b1 b2
+    let compare b1 b2 = M.compare Stdlib.compare b1 b2
     let equal b1 b2 = M.equal (=) b1 b2
     let subset b1 b2 =
       M.for_all (fun elt1 count1 -> 

@@ -86,7 +86,7 @@ let parseUnCAL_string = (map_info (fun _ -> None)) @@ parseUnCAL_string
 module SetofAllit = Set.Make (
   struct 
     type t = allit 
-    let compare = Pervasives.compare 
+    let compare = Stdlib.compare 
   end 
 ) *********************************************)
 
@@ -392,7 +392,7 @@ let stripFrE_iu iu =
 let bdIverbose = ref false
 
 let print_string : (string -> unit) = fun arg ->
-  if !bdIverbose then Pervasives.print_string arg
+  if !bdIverbose then Stdlib.print_string arg
 
 let ppr_aexpr (fmt:Format.formatter)  (exp:'a aexpr) =
   if !bdIverbose then ppr_aexpr fmt exp

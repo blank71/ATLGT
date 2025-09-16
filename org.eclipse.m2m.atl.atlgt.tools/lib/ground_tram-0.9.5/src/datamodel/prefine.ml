@@ -33,7 +33,7 @@ module PT (NLG : NLGsig) = struct
 
 module MLNode = Map.Make (struct 
     type t = SLNode.elt
-    let compare = Pervasives.compare
+    let compare = Stdlib.compare
   end )
 
   let lnodeSet2Map f = MLNode.set2map (module SLNode : Set.S with type elt = MLNode.key and type t = SLNode.t) f

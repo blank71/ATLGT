@@ -67,7 +67,7 @@ and lname = string                                (* label variable name *)
 module SetofVname = Set.Make (
   struct 
     type t = vname
-    let compare = Pervasives.compare
+    let compare = Stdlib.compare
   end
 )
 
@@ -75,7 +75,7 @@ module SetofVname = Set.Make (
 module SetofLname = Set.Make (
   struct 
     type t = lname
-    let compare = Pervasives.compare
+    let compare = Stdlib.compare
   end
 )
 

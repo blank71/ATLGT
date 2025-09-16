@@ -855,7 +855,7 @@ let rec generate_transformation_formula
 	(* for each input edge (v,eu,eu), output edge is either *)
 	(* copy-of-v, copy-of-eu, copy-of-eu *)
 	let add_edge_vee (i,j,k,n,e) =
-		if i<0 or j<0 or k<0 then failwith "[BUG] -1 -1 -1 edge : because of a rec body without &:= marker";
+		if i<0 || j<0 || k<0 then failwith "[BUG] -1 -1 -1 edge : because of a rec body without &:= marker";
 		eir := enroll_edge_I_J_K (!eir) (i,j,k, (`Var1 "e" |=| `Var1 "y") |&| e);
 		if n = "@<labvar>@" then (* for $L edge: [TODO] do not use magic literal... *)
 			List.iter (fun n ->
@@ -867,7 +867,7 @@ let rec generate_transformation_formula
 	in
 	(* or copy-of-eu, copy-of-eu, copy-of-eu *)
 	let add_edge_eee (i,j,k,n,e) =
-		if i<0 or j<0 or k<0 then failwith "[BUG] -1 -1 -1 edge : because of a rec body without &:= marker";
+		if i<0 || j<0 || k<0 then failwith "[BUG] -1 -1 -1 edge : because of a rec body without &:= marker";
 		eir := enroll_edge_I_J_K (!eir) (i,j,k, (`Var1 "x" |=| `Var1 "e") |&| (`Var1 "e" |=| `Var1 "y")
 		                                      |&| exists1 [`Var1 "x"] e);
 		if n = "@<labvar>@" then (* for $L edge: [TODO] do not use magic literal...  *)

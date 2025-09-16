@@ -2091,20 +2091,20 @@ then echo ... Configure error: ocamllex is not found; exit 1; fi
 # AC_SUBST(SET_MAKE) # if you use MAKE=make
 
 
-OCAMLC_VERSION=`$OCAMLC -version | sed 's/\([0-9][0-9]*\).\([0-9][0-9]*\).*/\100\2/'`
-
+OCAMLC_VERSION=`$OCAMLC -version`
 
 DATE=`echo '$Date: 2015/03/10 03:06:16 $' | sed 's%.*\(..../../..\).*%\1%'`
 VERSION="$GRoundTram $version 0.9.5 (20150310) $DATE"
 
-if test ! $OCAMLC_VERSION -ge 30012 ; \
-then echo ... Configure error: The version of $OCAMLC should be 3.12.0 or later; exit 1; fi
-
-
-
-
-
-
+if test $(echo $OCAMLC_VERSION | cut -d '.' -f 1 ) -lt 3 ; then 
+  echo ... Configure error: The version of $OCAMLC should be 3.12.0 or later; exit 1;
+else
+  if test $(echo $OCAMLC_VERSION | cut -d '.' -f 1 ) -eq 3 ; then
+    if test $(echo $OCAMLC_VERSION | cut -d '.' -f 2 ) -lt 12 ; then
+      echo ... Configure error: The version of $OCAMLC should be 3.12.0 or later; exit 1;
+    fi
+  fi
+fi 
 
 ac_config_files="$ac_config_files Makefile src/Makefile"
 

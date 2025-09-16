@@ -544,7 +544,7 @@ let newnode () : vtx  = Bid (GenId.next ())
    *)
 
 let connect_nodesL (onoderList1S:onodeR list) (inoderList2:inodeR list) =
-  let onoderList1 = (List.sort (fun x y -> Pervasives.compare (snd x) (snd y)) onoderList1S) in
+  let onoderList1 = (List.sort (fun x y -> Stdlib.compare (snd x) (snd y)) onoderList1S) in
   let rec cn ol il = match (ol,il) with
     ([],_) -> SetofEdge.empty
   | (_,[]) -> SetofEdge.empty (* in case of cycle(), not all output nodes have counterpart input nodes *)
@@ -1101,7 +1101,7 @@ let reachable1s (g0:graph) (x:vtx) : graph =
   let rec r mode ((_,l,vt) as e) g = 
     let nepsf   = (l <> ALEps) in 
     let flip    = mode && nepsf in
-    let newmode = mode or nepsf in
+    let newmode = mode || nepsf in
 if (SetofEdge.mem e g.e || flip )  then g else
     SetofEdge.fold (r newmode) (outgoEdgeS_g0 vt) { g with v = SetofVtx.add vt g.v; e = SetofEdge.add e g.e;} in
   let g = SetofEdge.fold (r false) (outgoEdgeS_g0 x) { emptyGraph with v = SetofVtx.singleton x;} in

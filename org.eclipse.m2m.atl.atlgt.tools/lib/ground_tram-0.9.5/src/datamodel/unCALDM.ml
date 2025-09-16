@@ -114,7 +114,7 @@ and  compare_vtx v1 v2 =
 (* type for set of vertex *)
 module Vtx = struct 
   type t = vtx
-  let compare = compare_vtx (* Pervasives.compare *)
+  let compare = compare_vtx (* Stdlib.compare *)
 end
 module SetofVtx = Set.Make(Vtx)
 module MapofVtx = Map.Make(Vtx)
@@ -138,7 +138,7 @@ module MapofMarker = Map.Make(Marker)
 (* type for set of label literals *)
 module Allit = struct 
   type t = allit
-  let compare = compare_allit (* Pervasives.compare *)
+  let compare = compare_allit (* Stdlib.compare *)
 end
 module SetofAllit = Set.Make(Allit)
 module MapofAllit = Map.Make(Allit)
@@ -147,7 +147,7 @@ module MapofAllit = Map.Make(Allit)
 module SetofPAllit = Set.Make(
   struct 
     type t = allit * allit
-    let compare = Pervasives.compare
+    let compare = Stdlib.compare
   end )
 
 type inodeR = marker * vtx   (* type for input node relations *)
@@ -186,7 +186,7 @@ type graph = {
    removal. Since mEdge is modified within Set, and the Set do not reorganize
    the modification, duplicate may arise in the Set as a result of modification. 
    The usage of the mEdge is based on the physical equality but requires 
-   efficient update of collection based on the ordering based on Pervasives.compare,
+   efficient update of collection based on the ordering based on Stdlib.compare,
    the additional slot (eid) is introduced and initialized to unique integer
    so that modification of other slot does not cause duplicates any more. *)
 type mEdge = {
@@ -198,7 +198,7 @@ type mEdge = {
 module SetofMEdge = Set.Make(
   struct
     type t = mEdge
-    let compare = Pervasives.compare
+    let compare = Stdlib.compare
   end
 )
 
@@ -225,7 +225,7 @@ end = struct
 	     xlabel          : allit;
 	     mutable destV   : MVtx.t;
 	    }
-  let compare = Pervasives.compare
+  let compare = Stdlib.compare
   end
 and SMEdge : Set.S with type elt = MEdge.t
   = Set.Make(MEdge)
@@ -261,7 +261,7 @@ let dummy_mvtx = { MVtx.vid = Bid 0;
  *)
 module MapofEbody = Map.Make (struct 
     type t = (allit * vtx)
-    let compare = Pervasives.compare
+    let compare = Stdlib.compare
   end )
 
 type viewmaps = {
@@ -271,7 +271,7 @@ type viewmaps = {
 
 module PVtx = struct 
   type t = vtx * vtx
-  let compare = Pervasives.compare
+  let compare = Stdlib.compare
 end
 module SetofPVtx = Set.Make(PVtx)
 module MapofPVtx = Map.Make(PVtx)

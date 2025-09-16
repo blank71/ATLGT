@@ -137,7 +137,7 @@ module Km3ToInternalSchema = struct
 
 	and decls_from (pkg: Km3.package) : internal_decl NameMap.t =
 		List.fold_left (fun theMap -> function 
-			| `datatype s when s="String" or s="Int"
+			| `datatype s when s="String" || s="Int"
 		                         -> NameMap.addl [
 			                          headdatatype_name s, headdatatype_decl s;
 			                          bodydatatype_name s, bodydatatype_decl s;
